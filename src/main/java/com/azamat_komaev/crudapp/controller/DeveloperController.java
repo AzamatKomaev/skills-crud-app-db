@@ -4,7 +4,7 @@ import com.azamat_komaev.crudapp.model.Developer;
 import com.azamat_komaev.crudapp.model.Skill;
 import com.azamat_komaev.crudapp.model.Specialty;
 import com.azamat_komaev.crudapp.repository.DeveloperRepository;
-import com.azamat_komaev.crudapp.repository.gson.GsonDeveloperRepositoryImpl;
+import com.azamat_komaev.crudapp.repository.jdbc.JdbcDeveloperRepositoryImpl;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ public class DeveloperController {
     private final DeveloperRepository developerRepository;
 
     public DeveloperController() {
-        this.developerRepository = new GsonDeveloperRepositoryImpl();
+        this.developerRepository = new JdbcDeveloperRepositoryImpl();
     }
 
     public List<Developer> getAll() {

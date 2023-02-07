@@ -2,7 +2,7 @@ package com.azamat_komaev.crudapp.controller;
 
 import com.azamat_komaev.crudapp.model.Specialty;
 import com.azamat_komaev.crudapp.repository.SpecialtyRepository;
-import com.azamat_komaev.crudapp.repository.gson.GsonSpecialtyRepositoryImpl;
+import com.azamat_komaev.crudapp.repository.jdbc.JdbcSpecialtyRepositoryImpl;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ public class SpecialtyController {
     private final SpecialtyRepository specialtyRepository;
 
     public SpecialtyController() {
-        this.specialtyRepository = new GsonSpecialtyRepositoryImpl();
+        this.specialtyRepository = new JdbcSpecialtyRepositoryImpl();
     }
 
     public List<Specialty> getAll() {

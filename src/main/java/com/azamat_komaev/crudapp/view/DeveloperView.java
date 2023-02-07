@@ -6,8 +6,8 @@ import com.azamat_komaev.crudapp.model.Skill;
 import com.azamat_komaev.crudapp.model.Specialty;
 import com.azamat_komaev.crudapp.repository.SkillRepository;
 import com.azamat_komaev.crudapp.repository.SpecialtyRepository;
-import com.azamat_komaev.crudapp.repository.gson.GsonSkillRepositoryImpl;
-import com.azamat_komaev.crudapp.repository.gson.GsonSpecialtyRepositoryImpl;
+import com.azamat_komaev.crudapp.repository.jdbc.JdbcSkillRepositoryImpl;
+import com.azamat_komaev.crudapp.repository.jdbc.JdbcSpecialtyRepositoryImpl;
 
 import java.util.*;
 
@@ -44,7 +44,7 @@ public class DeveloperView implements GenericView {
             .boxed()
             .toList();
 
-        SkillRepository skillRepository = new GsonSkillRepositoryImpl();
+        SkillRepository skillRepository = new JdbcSkillRepositoryImpl();
         List<Skill> skillList = new ArrayList<>();
         skillsIds.forEach(id -> skillList.add(skillRepository.getById(id)));
         return skillList;
@@ -54,7 +54,7 @@ public class DeveloperView implements GenericView {
         System.out.print("Enter specialty id: ");
         Integer specialtyId = Integer.parseInt(this.scanner.nextLine());
 
-        SpecialtyRepository repository = new GsonSpecialtyRepositoryImpl();
+        SpecialtyRepository repository = new JdbcSpecialtyRepositoryImpl();
         return repository.getById(specialtyId);
     }
 
