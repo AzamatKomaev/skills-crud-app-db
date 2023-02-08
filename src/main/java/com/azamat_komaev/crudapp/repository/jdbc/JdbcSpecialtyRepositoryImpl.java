@@ -20,7 +20,7 @@ public class JdbcSpecialtyRepositoryImpl implements SpecialtyRepository {
 
     @Override
     public Specialty getById(Integer id) {
-
+        return null;
     }
 
     @Override

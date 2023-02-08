@@ -10,14 +10,61 @@
         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
 
     <changeSet  id="1"  author="azamat_komaev">
-        <createTable  tableName="users">
+        <createTable  tableName="skills">
             <column  name="id"  type="int" autoIncrement="true">
-                <constraints  primaryKey="true"  nullable="false"/>
+                <constraints  primaryKey="true" nullable="false"/>
             </column>
-            <column  name="name"  type="varchar(50)">
+            <column  name="name"  type="varchar(255)">
                 <constraints  nullable="false"/>
             </column>
-            <column  name="active"  type="boolean"  defaultValueBoolean="true"/>
+            <column  name="active" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
+        <rollback>
+            <dropTable tableName="skills"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="2" author="azamat_komaev">
+        <createTable tableName="specialties">
+            <column  name="id"  type="int" autoIncrement="true">
+                <constraints  primaryKey="true" nullable="false"/>
+            </column>
+            <column  name="name"  type="varchar(255)">
+                <constraints  nullable="false"/>
+            </column>
+            <column  name="active" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="specialties"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="3" author="azamat_komaev">
+        <createTable tableName="developers">
+            <column  name="id"  type="int" autoIncrement="true">
+                <constraints  primaryKey="true" nullable="false"/>
+            </column>
+            <column  name="first_name"  type="varchar(255)">
+                <constraints  nullable="false"/>
+            </column>
+            <column  name="last_name"  type="varchar(255)">
+                <constraints  nullable="false"/>
+            </column>
+
+            <column name="specialty_id" type="int">
+                <constraints  nullable="false" foreignKeyName="fk_developers_specialties" references="specialties(id)"/>
+            </column>
+
+            <column  name="active" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="specialties"/>
+        </rollback>
     </changeSet>
 </databaseChangeLog>
