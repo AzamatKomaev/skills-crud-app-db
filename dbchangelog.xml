@@ -54,11 +54,9 @@
             <column  name="last_name"  type="varchar(255)">
                 <constraints  nullable="false"/>
             </column>
-
             <column name="specialty_id" type="int">
                 <constraints  nullable="false" foreignKeyName="fk_developers_specialties" references="specialties(id)"/>
             </column>
-
             <column  name="active" type="boolean" defaultValueBoolean="true">
                 <constraints nullable="false"/>
             </column>
@@ -67,4 +65,19 @@
             <dropTable tableName="specialties"/>
         </rollback>
     </changeSet>
+
+    <changeSet id="4" author="azamat_komaev">
+        <createTable tableName="developers_skills">
+            <column  name="id"  type="int" autoIncrement="true">
+                <constraints  primaryKey="true" nullable="false"/>
+            </column>
+            <column name="developer_id" type="int">
+                <constraints  nullable="false" foreignKeyName="fk_developers_developers_skills" references="developers(id)"/>
+            </column>
+            <column name="skill_id" type="int">
+                <constraints  nullable="false" foreignKeyName="fk_skills_developers_skills" references="skills(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>
