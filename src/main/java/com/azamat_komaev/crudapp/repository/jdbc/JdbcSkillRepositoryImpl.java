@@ -15,11 +15,12 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
 
     @Override
     public Skill getById(Integer id) {
+        String sqlQuery = "select * from skills where id = ?";
         Skill skill = null;
 
         try (
             Connection conn = Database.getInstance().getConnection();
-            PreparedStatement statement = conn.prepareStatement("select * from skills where id = ?");
+            PreparedStatement statement = conn.prepareStatement(sqlQuery);
         ) {
             statement.setInt(1, id);
             ResultSet rs = statement.executeQuery();
@@ -41,12 +42,13 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
 
     @Override
     public List<Skill> getAll() {
+        String sqlQuery = "select * from skills";
         List<Skill> skillList = new ArrayList<>();
 
         try (
             Connection conn = Database.getInstance().getConnection();
             Statement statement = conn.createStatement();
-            ResultSet rs = statement.executeQuery("select * from skills")
+            ResultSet rs = statement.executeQuery(sqlQuery)
         ) {
             while (rs.next()) {
                 Skill skill = new Skill(rs.getInt("id"), rs.getString("name"),
@@ -62,7 +64,21 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
 
     @Override
     public Skill save(Skill skillToSave) {
-        return null;
+        String sqlQuery = "insert into skills (name, active) values (?, ?)";
+
+        try (
+            Connection conn = Database.getInstance().getConnection();
+            PreparedStatement statement = conn.prepareStatement(sqlQuery);
+        ) {
+            statement.setString(1, skillToSave.getName());
+            statement.setBoolean(2, skillToSave.getStatus() == Status.ACTIVE);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return skillToSave;
     }
 
     @Override
