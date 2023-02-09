@@ -9,7 +9,6 @@ import java.util.Properties;
 
 public class Database {
     private static Database instance;
-    private Connection connection = null;
     private String url;
     private String username;
     private String password;
@@ -39,6 +38,8 @@ public class Database {
     }
 
     public Connection getConnection() {
+        Connection connection = null;
+
         try {
             connection = DriverManager.getConnection(url + "?user=" + username + "&password=" + password);
         } catch (SQLException e) {
@@ -46,16 +47,6 @@ public class Database {
         }
 
         return connection;
-    }
-
-    public void closeConnection() {
-        if (connection != null) {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public static Database getInstance() {

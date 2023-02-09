@@ -5,10 +5,7 @@ import com.azamat_komaev.crudapp.model.Skill;
 import com.azamat_komaev.crudapp.model.Status;
 import com.azamat_komaev.crudapp.repository.SkillRepository;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.*;
 
 public class JdbcSkillRepositoryImpl implements SkillRepository {
@@ -18,7 +15,28 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
 
     @Override
     public Skill getById(Integer id) {
-        return null;
+        Skill skill = null;
+
+        try (
+            Connection conn = Database.getInstance().getConnection();
+            PreparedStatement statement = conn.prepareStatement("select * from skills where id = ?");
+        ) {
+            statement.setInt(1, id);
+            ResultSet rs = statement.executeQuery();
+
+            if (!rs.next()) {
+                return null;
+            }
+
+            skill = new Skill(rs.getInt("id"), rs.getString("name"),
+                              rs.getBoolean("active") ? Status.ACTIVE : Status.DELETED);
+
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return skill;
     }
 
     @Override
@@ -37,7 +55,6 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
         }
 
         return skillList;
