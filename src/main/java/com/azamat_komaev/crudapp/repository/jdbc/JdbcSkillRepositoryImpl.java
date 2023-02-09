@@ -64,14 +64,13 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
 
     @Override
     public Skill save(Skill skillToSave) {
-        String sqlQuery = "insert into skills (name, active) values (?, ?)";
+        String sqlQuery = "insert into skills (name) values (?)";
 
         try (
             Connection conn = Database.getInstance().getConnection();
             PreparedStatement statement = conn.prepareStatement(sqlQuery);
         ) {
             statement.setString(1, skillToSave.getName());
-            statement.setBoolean(2, skillToSave.getStatus() == Status.ACTIVE);
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -83,11 +82,36 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
 
     @Override
     public Skill update(Skill skill) {
-        return null;
+        String sqlQuery = "update skills set name = ? where id = ?";
+
+        try (
+            Connection conn = Database.getInstance().getConnection();
+            PreparedStatement statement = conn.prepareStatement(sqlQuery)
+        ) {
+            statement.setString(1, skill.getName());
+            statement.setInt(2, skill.getId());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return skill;
     }
 
     @Override
     public void deleteById(Integer id) {
+        String sqlQuery = "delete from skills where id = ?";
+
+        try (
+            Connection conn = Database.getInstance().getConnection();
+            PreparedStatement statement = conn.prepareStatement(sqlQuery)
+        ) {
+            statement.setInt(1, id);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
 
