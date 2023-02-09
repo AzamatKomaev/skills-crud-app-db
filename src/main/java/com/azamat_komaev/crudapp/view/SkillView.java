@@ -2,6 +2,7 @@ package com.azamat_komaev.crudapp.view;
 
 import com.azamat_komaev.crudapp.controller.SkillController;
 import com.azamat_komaev.crudapp.model.Skill;
+import com.azamat_komaev.crudapp.model.Status;
 
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -43,14 +44,14 @@ public class SkillView implements GenericView {
 
     public void saveAndPrint() {
         String name = readAndParseName();
-        Skill newSkill = this.skillController.save(name);
+        Skill newSkill = this.skillController.save(name, Status.ACTIVE);
         System.out.println(newSkill);
     }
 
     public void updateAndPrint() {
         Integer id = readAndParseId();
         String name = readAndParseName();
-        Skill skillToPrint = this.skillController.update(id, name);
+        Skill skillToPrint = this.skillController.update(id, name, Status.ACTIVE);
 
         if (skillToPrint == null) {
             System.out.println("There is no any skill with such id!");

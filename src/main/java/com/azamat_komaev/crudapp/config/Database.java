@@ -1,6 +1,7 @@
 package com.azamat_komaev.crudapp.config;
 
 import java.io.*;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -18,13 +19,7 @@ public class Database {
     }
 
     private File getPropertiesFile() {
-        File folder = new File("").getAbsoluteFile();
-
-        for (int i = 0; i < 7; i++) {
-            folder = folder.getParentFile();
-        }
-
-        return new File(folder.getAbsolutePath() + "/liquibase.properties");
+        return new File("liquibase.properties");
     }
 
     private void setUpProperties() {

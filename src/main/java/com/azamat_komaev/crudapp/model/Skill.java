@@ -9,9 +9,10 @@ public class Skill {
 
     public Skill() {}
 
-    public Skill(Integer id, String name) {
+    public Skill(Integer id, String name, Status status) {
         this.id = id;
         this.name = name;
+        this.status = status;
     }
 
     public Integer getId() {
