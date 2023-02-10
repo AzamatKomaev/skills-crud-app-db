@@ -4,6 +4,7 @@ import com.azamat_komaev.crudapp.controller.DeveloperController;
 import com.azamat_komaev.crudapp.model.Developer;
 import com.azamat_komaev.crudapp.model.Skill;
 import com.azamat_komaev.crudapp.model.Specialty;
+import com.azamat_komaev.crudapp.model.Status;
 import com.azamat_komaev.crudapp.repository.SkillRepository;
 import com.azamat_komaev.crudapp.repository.SpecialtyRepository;
 import com.azamat_komaev.crudapp.repository.jdbc.JdbcSkillRepositoryImpl;
@@ -80,7 +81,7 @@ public class DeveloperView implements GenericView {
         List<Skill> skillList = readAndParseSkillList();
         Specialty specialty = readAndParseSpecialty();
 
-        Developer newDeveloper = this.developerController.save(firstName, lastName, skillList, specialty);
+        Developer newDeveloper = this.developerController.save(firstName, lastName, Status.ACTIVE, skillList, specialty);
         System.out.println(newDeveloper);
     }
 
@@ -92,7 +93,7 @@ public class DeveloperView implements GenericView {
         Specialty specialty = readAndParseSpecialty();
 
         try {
-            Developer developerToPrint = this.developerController.update(id, firstName, lastName, skillList, specialty);
+            Developer developerToPrint = this.developerController.update(id, firstName, lastName, Status.ACTIVE, skillList, specialty);
             System.out.println(developerToPrint);
         } catch (NoSuchElementException e) {
             System.out.println("There is no any developer with such id!");

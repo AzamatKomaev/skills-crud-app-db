@@ -102,7 +102,7 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
 
     @Override
     public void deleteById(Integer id) {
-        String sqlQuery = "delete from skills where id = ?";
+        String sqlQuery = "update skills set active = true where id = ?";
 
         try (
             Connection conn = Database.getInstance().getConnection();

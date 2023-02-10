@@ -3,6 +3,7 @@ package com.azamat_komaev.crudapp.controller;
 import com.azamat_komaev.crudapp.model.Developer;
 import com.azamat_komaev.crudapp.model.Skill;
 import com.azamat_komaev.crudapp.model.Specialty;
+import com.azamat_komaev.crudapp.model.Status;
 import com.azamat_komaev.crudapp.repository.DeveloperRepository;
 import com.azamat_komaev.crudapp.repository.jdbc.JdbcDeveloperRepositoryImpl;
 
@@ -23,13 +24,13 @@ public class DeveloperController {
         return this.developerRepository.getById(id);
     }
 
-    public Developer save(String firstName, String lastName,
+    public Developer save(String firstName, String lastName, Status status,
                           List<Skill> skillList, Specialty specialty) {
-        Developer developerToSave = new Developer(null, firstName, lastName, skillList, specialty);
+        Developer developerToSave = new Developer(null, firstName, lastName, status, skillList, specialty);
         return this.developerRepository.save(developerToSave);
     }
 
-    public Developer update(Integer id, String firstName, String lastName,
+    public Developer update(Integer id, String firstName, String lastName, Status status,
                             List<Skill> skillList, Specialty specialty) {
         Developer developerToUpdate = this.developerRepository.getById(id);
 
@@ -37,7 +38,7 @@ public class DeveloperController {
             return null;
         }
 
-        developerToUpdate = new Developer(id, firstName, lastName, skillList, specialty);
+        developerToUpdate = new Developer(id, firstName, lastName, status, skillList, specialty);
         return this.developerRepository.update(developerToUpdate);
     }
 

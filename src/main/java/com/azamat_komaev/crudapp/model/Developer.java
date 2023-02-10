@@ -13,13 +13,14 @@ public class Developer {
 
     public Developer() {}
 
-    public Developer(Integer id, String firstName, String lastName,
+    public Developer(Integer id, String firstName, String lastName, Status status,
                      List<Skill> skills, Specialty specialty) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.skills = skills;
         this.specialty = specialty;
+        this.status = status;
     }
 
     public Integer getId() {

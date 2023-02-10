@@ -105,7 +105,7 @@ public class JdbcSpecialtyRepositoryImpl implements SpecialtyRepository {
 
     @Override
     public void deleteById(Integer id) {
-        String sqlQuery = "delete from specialties where id = ?";
+        String sqlQuery = "update specialties set active = false where id = ?";
         try (
             Connection conn = Database.getInstance().getConnection();
             PreparedStatement statement = conn.prepareStatement(sqlQuery)
