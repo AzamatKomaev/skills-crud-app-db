@@ -30,11 +30,12 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
             }
 
             skill = new Skill(rs.getInt("id"), rs.getString("name"),
-                              rs.getBoolean("active") ? Status.ACTIVE : Status.DELETED);
+                rs.getBoolean("active") ? Status.ACTIVE : Status.DELETED);
 
             rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
+
         }
 
         return skill;

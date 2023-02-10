@@ -10,9 +10,10 @@ public class Specialty {
     public Specialty() {
     }
 
-    public Specialty(Integer id, String name) {
+    public Specialty(Integer id, String name, Status status) {
         this.id = id;
         this.name = name;
+        this.status = status;
     }
 
     public Integer getId() {

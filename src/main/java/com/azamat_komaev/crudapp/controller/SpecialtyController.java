@@ -1,6 +1,7 @@
 package com.azamat_komaev.crudapp.controller;
 
 import com.azamat_komaev.crudapp.model.Specialty;
+import com.azamat_komaev.crudapp.model.Status;
 import com.azamat_komaev.crudapp.repository.SpecialtyRepository;
 import com.azamat_komaev.crudapp.repository.jdbc.JdbcSpecialtyRepositoryImpl;
 
@@ -21,19 +22,19 @@ public class SpecialtyController {
         return this.specialtyRepository.getById(id);
     }
 
-    public Specialty save(String name) {
-        Specialty specialtyToSave = new Specialty(null, name);
+    public Specialty save(String name, Status status) {
+        Specialty specialtyToSave = new Specialty(null, name, status);
         return this.specialtyRepository.save(specialtyToSave);
     }
 
-    public Specialty update(Integer id, String name) {
+    public Specialty update(Integer id, String name, Status status) {
         Specialty specialtyToUpdate = this.specialtyRepository.getById(id);
 
         if (specialtyToUpdate == null) {
             return null;
         }
 
-        specialtyToUpdate = new Specialty(id, name);
+        specialtyToUpdate = new Specialty(id, name, status);
         return this.specialtyRepository.update(specialtyToUpdate);
     }
 

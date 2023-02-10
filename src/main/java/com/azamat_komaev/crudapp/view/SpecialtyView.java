@@ -2,6 +2,7 @@ package com.azamat_komaev.crudapp.view;
 
 import com.azamat_komaev.crudapp.controller.SpecialtyController;
 import com.azamat_komaev.crudapp.model.Specialty;
+import com.azamat_komaev.crudapp.model.Status;
 
 import java.util.Scanner;
 
@@ -42,14 +43,14 @@ public class SpecialtyView implements GenericView {
 
     public void saveAndPrint() {
         String name = readAndParseName();
-        Specialty newSpecialty = this.specialtyController.save(name);
+        Specialty newSpecialty = this.specialtyController.save(name, Status.ACTIVE);
         System.out.println(newSpecialty);
     }
 
     public void updateAndPrint() {
         Integer id = readAndParseId();
         String name = readAndParseName();
-        Specialty specialtyToPrint = this.specialtyController.update(id, name);
+        Specialty specialtyToPrint = this.specialtyController.update(id, name, Status.ACTIVE);
 
         if (specialtyToPrint == null) {
             System.out.println("There is not any specialty with such id!");
