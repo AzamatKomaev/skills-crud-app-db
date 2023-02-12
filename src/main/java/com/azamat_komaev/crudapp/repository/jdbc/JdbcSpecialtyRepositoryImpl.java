@@ -1,16 +1,12 @@
 package com.azamat_komaev.crudapp.repository.jdbc;
 
 import com.azamat_komaev.crudapp.config.Database;
-import com.azamat_komaev.crudapp.model.Skill;
 import com.azamat_komaev.crudapp.model.Specialty;
 import com.azamat_komaev.crudapp.model.Status;
 import com.azamat_komaev.crudapp.repository.SpecialtyRepository;
-import com.azamat_komaev.crudapp.service.RepositoryService;
 
 import java.sql.*;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 public class JdbcSpecialtyRepositoryImpl implements SpecialtyRepository {
     public JdbcSpecialtyRepositoryImpl() {

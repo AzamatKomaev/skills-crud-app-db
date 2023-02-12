@@ -7,46 +7,45 @@ import com.azamat_komaev.crudapp.model.Specialty;
 import com.azamat_komaev.crudapp.model.Status;
 import com.azamat_komaev.crudapp.repository.DeveloperRepository;
 import com.azamat_komaev.crudapp.repository.SkillRepository;
+import com.azamat_komaev.crudapp.util.DeveloperRepositoryUtil;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import javax.swing.plaf.nimbus.State;
+import java.sql.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
 
     public JdbcDeveloperRepositoryImpl() {
     }
 
-    private Developer getDeveloperResultSet(ResultSet rs, SkillRepository skillRepository) throws SQLException {
-        int developerId = rs.getInt("d.id");
-        String firstName = rs.getString("first_name");
-        String lastName = rs.getString("last_name");
-        Status isDeveloperActive = rs.getBoolean("d.active") ? Status.ACTIVE : Status.DELETED;
-
-        int specialtyId = rs.getInt("specialty_id");
-        String specialtyName = rs.getString("sp.name");
-        Status isSpecialtyActive = rs.getBoolean("sp.active") ? Status.ACTIVE : Status.DELETED;
-
-        String skillsId = rs.getString("skills_id");
-
-        Specialty specialty = new Specialty(specialtyId, specialtyName, isSpecialtyActive);
-        List<Skill> skillList = new ArrayList<>();
-
-        if (skillsId != null) {
-            for (String skillId: skillsId.split(" ")) {
-                skillList.add(skillRepository.getById(Integer.valueOf(skillId)));
-            }
-        }
-
-        return new Developer(developerId, firstName, lastName,
-                             isDeveloperActive, skillList, specialty);
-    }
-
     @Override
     public Developer getById(Integer id) {
-        return null;
+        String sqlQuery = "select d.*, sp.*, group_concat(sk.id separator ' ') as skills_id " +
+                          "from developers d left join developers_skills ds on d.id = ds.developer_id " +
+                          "left join skills sk on ds.skill_id = sk.id " +
+                          "left join specialties sp on d.specialty_id = sp.id " +
+                          "where d.id = ? group by d.id";
+        Developer developer = null;
+        SkillRepository skillRepository = new JdbcSkillRepositoryImpl();
+
+        try (
+            Connection conn = Database.getInstance().getConnection();
+            PreparedStatement statement = conn.prepareStatement(sqlQuery);
+        ) {
+            statement.setInt(1, id);
+            ResultSet rs = statement.executeQuery();
+
+            if (!rs.next()) {
+                return null;
+            }
+
+            developer = DeveloperRepositoryUtil.getDeveloperResultSet(rs, skillRepository);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return developer;
     }
 
     @Override
@@ -63,20 +62,12 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
             Statement statement = conn.createStatement();
             ResultSet rs = statement.executeQuery(sqlQuery)
         ) {
-            Map<Integer, Developer> developerMap = new HashMap<>();
-
             while (rs.next()) {
-                int developerId = rs.getInt("d.id");
-
-                if (developerMap.containsKey(developerId)) {
-                    continue;
-                }
-
-                Developer developer = getDeveloperResultSet(rs, skillRepository);
-                developerMap.put(developerId, developer);
+                Developer developer = DeveloperRepositoryUtil.getDeveloperResultSet(rs, skillRepository);
+                developerList.add(developer);
             }
 
-            return new ArrayList<>(developerMap.values());
+            return developerList;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -86,11 +77,58 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
 
     @Override
     public Developer save(Developer developerToSave) {
-        return null;
+        String insertDeveloperSqlQuery = "insert into developers (first_name, last_name, specialty_id) " +
+                                         "values (?, ?, ?)";
+
+
+        try (
+            Connection conn = Database.getInstance().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(insertDeveloperSqlQuery,
+                                                                        Statement.RETURN_GENERATED_KEYS);
+        ) {
+            conn.setAutoCommit(false);
+
+            preparedStatement.setString(1, developerToSave.getFirstName());
+            preparedStatement.setString(2, developerToSave.getLastName());
+            preparedStatement.setInt(3, developerToSave.getSpecialty().getId());
+
+            preparedStatement.executeUpdate();
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+
+            if (!rs.next()) {
+                return null;
+            }
+
+            int developerId = rs.getInt(1);
+            DeveloperRepositoryUtil.insertSkillsIdsIntoDevelopersSkillsTable(conn, developerToSave, developerId);
+
+            rs.close();
+
+            conn.commit();
+            conn.setAutoCommit(true);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return developerToSave;
     }
 
     @Override
     public Developer update(Developer developer) {
+        String updateDeveloperSqlQuery = "update developers set first_name = ?, last_name = ?, specialty_id = ? " +
+                                         "where id = ?";
+
+        try (
+            Connection conn = Database.getInstance().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(updateDeveloperSqlQuery)
+        ) {
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
         return null;
     }
 

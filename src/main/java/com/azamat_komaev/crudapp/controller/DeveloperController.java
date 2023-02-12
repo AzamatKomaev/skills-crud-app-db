@@ -26,6 +26,11 @@ public class DeveloperController {
 
     public Developer save(String firstName, String lastName, Status status,
                           List<Skill> skillList, Specialty specialty) {
+        if (specialty == null) {
+            throw new NullPointerException("Specialty cannot be null. Maybe you are passing null value...");
+        }
+
+        System.out.println("Skill list is " + skillList);
         Developer developerToSave = new Developer(null, firstName, lastName, status, skillList, specialty);
         return this.developerRepository.save(developerToSave);
     }

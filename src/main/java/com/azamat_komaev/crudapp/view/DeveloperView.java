@@ -37,6 +37,7 @@ public class DeveloperView implements GenericView {
     }
 
     private List<Skill> readAndParseSkillList() {
+        SkillRepository skillRepository = new JdbcSkillRepositoryImpl();
         System.out.print("Enter list of skill ids seperated with spaces: ");
         String[] skillsIdsString = this.scanner.nextLine().split(" ");
 
@@ -45,9 +46,14 @@ public class DeveloperView implements GenericView {
             .boxed()
             .toList();
 
-        SkillRepository skillRepository = new JdbcSkillRepositoryImpl();
         List<Skill> skillList = new ArrayList<>();
-        skillsIds.forEach(id -> skillList.add(skillRepository.getById(id)));
+        skillsIds.forEach(id -> {
+            Skill skill = skillRepository.getById(id);
+            if (skill != null) {
+                skillList.add(skill);
+            }
+        });
+
         return skillList;
     }
 

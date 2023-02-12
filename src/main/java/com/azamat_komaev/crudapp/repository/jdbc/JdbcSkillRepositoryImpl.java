@@ -35,7 +35,6 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
             rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
-
         }
 
         return skill;
