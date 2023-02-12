@@ -36,13 +36,13 @@ public class DeveloperRepositoryUtil {
         }
 
         return new Developer(developerId, firstName, lastName,
-            isDeveloperActive, skillList, specialty);
+                             isDeveloperActive, skillList, specialty);
     }
 
     public static void insertSkillsIdsIntoDevelopersSkillsTable(Connection conn,
                                                           Developer developer, int developerId) throws SQLException {
         String insertSkillsIdsIntoM2MTableSqlQuery = "insert into developers_skills (developer_id, skill_id) " +
-            "values (?, ?)";
+                                                     "values (?, ?)";
 
         List<Integer> skillsId = developer.getSkills().stream().map(Skill::getId).toList();
         PreparedStatement preparedStatement = conn.prepareStatement(insertSkillsIdsIntoM2MTableSqlQuery);

@@ -79,8 +79,6 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
     public Developer save(Developer developerToSave) {
         String insertDeveloperSqlQuery = "insert into developers (first_name, last_name, specialty_id) " +
                                          "values (?, ?, ?)";
-
-
         try (
             Connection conn = Database.getInstance().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(insertDeveloperSqlQuery,
@@ -91,8 +89,8 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
             preparedStatement.setString(1, developerToSave.getFirstName());
             preparedStatement.setString(2, developerToSave.getLastName());
             preparedStatement.setInt(3, developerToSave.getSpecialty().getId());
-
             preparedStatement.executeUpdate();
+
             ResultSet rs = preparedStatement.getGeneratedKeys();
 
             if (!rs.next()) {
@@ -115,21 +113,38 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
     }
 
     @Override
-    public Developer update(Developer developer) {
+    public Developer update(Developer developerToUpdate) {
         String updateDeveloperSqlQuery = "update developers set first_name = ?, last_name = ?, specialty_id = ? " +
                                          "where id = ?";
+        String deleteOldDeveloperSkillsSqlQuery = "delete from developers_skills where developer_id = ?";
 
         try (
             Connection conn = Database.getInstance().getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(updateDeveloperSqlQuery)
+            PreparedStatement preparedUpdateStatement = conn.prepareStatement(updateDeveloperSqlQuery);
+            PreparedStatement preparedDeleteStatement = conn.prepareStatement(deleteOldDeveloperSkillsSqlQuery)
         ) {
+            conn.setAutoCommit(false);
 
+            preparedUpdateStatement.setString(1, developerToUpdate.getFirstName());
+            preparedUpdateStatement.setString(2, developerToUpdate.getLastName());
+            preparedUpdateStatement.setInt(3, developerToUpdate.getSpecialty().getId());
+            preparedUpdateStatement.setInt(4, developerToUpdate.getId());
+            preparedUpdateStatement.executeUpdate();
+
+            preparedDeleteStatement.setInt(1, developerToUpdate.getId());
+            preparedDeleteStatement.executeUpdate();
+
+            DeveloperRepositoryUtil.insertSkillsIdsIntoDevelopersSkillsTable(conn, developerToUpdate,
+                                                                             developerToUpdate.getId());
+
+            conn.commit();
+            conn.setAutoCommit(true);
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
 
-        return null;
+        return developerToUpdate;
     }
 
     @Override
