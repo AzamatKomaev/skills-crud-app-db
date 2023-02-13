@@ -4,51 +4,50 @@ import com.azamat_komaev.crudapp.model.Developer;
 import com.azamat_komaev.crudapp.model.Skill;
 import com.azamat_komaev.crudapp.model.Specialty;
 import com.azamat_komaev.crudapp.model.Status;
-import com.azamat_komaev.crudapp.repository.DeveloperRepository;
-import com.azamat_komaev.crudapp.repository.jdbc.JdbcDeveloperRepositoryImpl;
+import com.azamat_komaev.crudapp.service.DeveloperService;
+import com.azamat_komaev.crudapp.service.SpecialtyService;
 
 import java.util.List;
 
 public class DeveloperController {
-    private final DeveloperRepository developerRepository;
+    private final DeveloperService developerService;
 
     public DeveloperController() {
-        this.developerRepository = new JdbcDeveloperRepositoryImpl();
+        this.developerService = new DeveloperService();
     }
 
     public List<Developer> getAll() {
-        return this.developerRepository.getAll();
+        return developerService.getAll();
     }
 
     public Developer getOne(Integer id) {
-        return this.developerRepository.getById(id);
+        return developerService.getById(id);
     }
 
     public Developer save(String firstName, String lastName, Status status,
                           List<Skill> skillList, Specialty specialty) {
-        if (specialty == null) {
-            throw new NullPointerException("Specialty cannot be null. Maybe you are passing null value...");
+        if (SpecialtyService.validateSpecialty(specialty)) {
+            throw new IllegalArgumentException("Specialty object is not valid!");
         }
 
-        System.out.println("Skill list is " + skillList);
-        Developer developerToSave = new Developer(null, firstName, lastName, status, skillList, specialty);
-        return this.developerRepository.save(developerToSave);
+        return developerService.save(firstName, lastName, status, skillList, specialty);
     }
 
     public Developer update(Integer id, String firstName, String lastName, Status status,
                             List<Skill> skillList, Specialty specialty) {
-        Developer developerToUpdate = this.developerRepository.getById(id);
+        Developer developerToUpdate = developerService.getById(id);
 
-        if (developerToUpdate == null) {
-            return null;
+        if (!DeveloperService.validateDeveloper(developerToUpdate)) {
+            throw new IllegalArgumentException(
+                "Developer object is not valid. Maybe there is not any developer with such id: " + id
+            );
         }
 
-        developerToUpdate = new Developer(id, firstName, lastName, status, skillList, specialty);
-        return this.developerRepository.update(developerToUpdate);
+        return developerService.update(developerToUpdate, firstName, lastName, status, skillList, specialty);
     }
 
     public void destroy(Integer id) {
-        this.developerRepository.deleteById(id);
+        developerService.delete(id);
     }
 }
 

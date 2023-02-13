@@ -2,44 +2,41 @@ package com.azamat_komaev.crudapp.controller;
 
 import com.azamat_komaev.crudapp.model.Skill;
 import com.azamat_komaev.crudapp.model.Status;
-import com.azamat_komaev.crudapp.repository.jdbc.JdbcSkillRepositoryImpl;
-import com.azamat_komaev.crudapp.repository.SkillRepository;
+import com.azamat_komaev.crudapp.service.SkillService;
 
 import java.util.List;
 
 public class SkillController {
-    private final SkillRepository skillRepository;
+    private final SkillService skillService;
 
     public SkillController() {
-        this.skillRepository = new JdbcSkillRepositoryImpl();
+        this.skillService = new SkillService();
     }
 
     public List<Skill> getAll() {
-        return this.skillRepository.getAll();
+        return skillService.getAll();
     }
 
     public Skill getOne(Integer id) {
-        return this.skillRepository.getById(id);
+        return skillService.getById(id);
     }
 
     public Skill save(String name, Status status) {
-        Skill skillToSave = new Skill(null, name, status);
-        return this.skillRepository.save(skillToSave);
+        return skillService.save(name, status);
     }
 
     public Skill update(Integer id, String name, Status status) {
-        Skill skillToUpdate = this.skillRepository.getById(id);
+        Skill skillToUpdate = this.skillService.getById(id);
 
-        if (skillToUpdate == null) {
-            return null;
+        if (!SkillService.validateSkill(skillToUpdate)) {
+            throw new IllegalArgumentException("Skill object is not valid. Maybe there is not any skill with such id: " + id);
         }
 
-        skillToUpdate = new Skill(id, name, status);
-        return this.skillRepository.update(skillToUpdate);
+        return this.skillService.update(skillToUpdate, name, status);
     }
 
     public void destroy(Integer id) {
-        this.skillRepository.deleteById(id);
+        skillService.delete(id);
     }
 }
 

@@ -2,44 +2,41 @@ package com.azamat_komaev.crudapp.controller;
 
 import com.azamat_komaev.crudapp.model.Specialty;
 import com.azamat_komaev.crudapp.model.Status;
-import com.azamat_komaev.crudapp.repository.SpecialtyRepository;
-import com.azamat_komaev.crudapp.repository.jdbc.JdbcSpecialtyRepositoryImpl;
+import com.azamat_komaev.crudapp.service.SpecialtyService;
 
 import java.util.List;
 
 public class SpecialtyController {
-    private final SpecialtyRepository specialtyRepository;
+    private final SpecialtyService specialtyService;
 
     public SpecialtyController() {
-        this.specialtyRepository = new JdbcSpecialtyRepositoryImpl();
+        this.specialtyService = new SpecialtyService();
     }
 
     public List<Specialty> getAll() {
-        return this.specialtyRepository.getAll();
+        return specialtyService.getAll();
     }
 
     public Specialty getOne(Integer id) {
-        return this.specialtyRepository.getById(id);
+        return specialtyService.getById(id);
     }
 
     public Specialty save(String name, Status status) {
-        Specialty specialtyToSave = new Specialty(null, name, status);
-        return this.specialtyRepository.save(specialtyToSave);
+        return specialtyService.save(name, status);
     }
 
     public Specialty update(Integer id, String name, Status status) {
-        Specialty specialtyToUpdate = this.specialtyRepository.getById(id);
+        Specialty specialtyToUpdate = this.specialtyService.getById(id);
 
-        if (specialtyToUpdate == null) {
-            return null;
+        if (SpecialtyService.validateSpecialty(specialtyToUpdate)) {
+            throw new IllegalArgumentException("Specialty object is not valid. Maybe there is not any skill with such id: " + id);
         }
 
-        specialtyToUpdate = new Specialty(id, name, status);
-        return this.specialtyRepository.update(specialtyToUpdate);
+        return specialtyService.update(specialtyToUpdate, name, status);
     }
 
     public void destroy(Integer id) {
-        this.specialtyRepository.deleteById(id);
+        specialtyService.delete(id);
     }
 }
 

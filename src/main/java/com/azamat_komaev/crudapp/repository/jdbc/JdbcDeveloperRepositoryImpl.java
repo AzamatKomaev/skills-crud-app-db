@@ -149,6 +149,25 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
 
     @Override
     public void deleteById(Integer id) {
+        String deleteDeveloperSqlQuery = "delete from developers where id = ?";
+        String deleteDevelopersSkillsRelationsSqlQuery = "delete from developers_skills where developer_id = ?";
 
+        try (
+            Connection conn = Database.getInstance().getConnection();
+            PreparedStatement preparedDeleteDeveloperStatement = conn.prepareStatement(deleteDeveloperSqlQuery);
+            PreparedStatement preparedDeleteRelationsStatement = conn.prepareStatement(deleteDevelopersSkillsRelationsSqlQuery);
+        ) {
+            conn.setAutoCommit(false);
+
+            preparedDeleteRelationsStatement.setInt(1, id);
+            preparedDeleteDeveloperStatement.setInt(1, id);
+
+            preparedDeleteRelationsStatement.executeUpdate();
+            preparedDeleteDeveloperStatement.executeUpdate();
+
+            conn.setAutoCommit(true);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
