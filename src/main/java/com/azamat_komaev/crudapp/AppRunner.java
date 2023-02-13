@@ -8,7 +8,7 @@ public class AppRunner {
         System.out.println("""
             Hello! It is console application to work with different entities.\s
             If you want to get full information about how to use it you can read README.md.\s
-            """);
+        """);
 
         while (true) {
             String input = ViewUtil.askForAction();

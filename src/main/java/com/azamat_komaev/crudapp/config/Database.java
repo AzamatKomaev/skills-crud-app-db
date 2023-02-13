@@ -1,7 +1,6 @@
 package com.azamat_komaev.crudapp.config;
 
 import java.io.*;
-import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -17,15 +16,12 @@ public class Database {
         setUpProperties();
     }
 
-    private File getPropertiesFile() {
-        return new File("liquibase.properties");
-    }
-
     private void setUpProperties() {
         Properties properties = new Properties();
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 
         try (
-            InputStream in = new FileInputStream(getPropertiesFile());
+            InputStream in = classloader.getResourceAsStream(System.getenv("PROPERTIES_FILE"));
         ) {
             properties.load(in);
 
