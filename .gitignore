@@ -1,5 +1,5 @@
 .idea
-src/main/resources/liquibase.dev.properties
+src/main/resources/liquibase.properties
 src/main/resources/liquibase.test.properties
 
 ##############################

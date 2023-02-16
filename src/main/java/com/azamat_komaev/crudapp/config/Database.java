@@ -19,10 +19,9 @@ public class Database {
     private void setUpProperties() {
         Properties properties = new Properties();
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-        System.out.println(classloader);
 
         try (
-            InputStream in = classloader.getResourceAsStream(System.getenv("PROPERTIES_FILE"));
+            InputStream in = classloader.getResourceAsStream("liquibase.properties");
         ) {
             properties.load(in);
 
