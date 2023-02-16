@@ -1,6 +1,5 @@
 package com.azamat_komaev.crudapp.repository;
 
-import java.sql.Connection;
 import java.util.List;
 
 public interface GenericRepository<T, ID> {

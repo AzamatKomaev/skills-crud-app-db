@@ -2,15 +2,16 @@ package com.azamat_komaev.crudapp.controller;
 
 import com.azamat_komaev.crudapp.model.Specialty;
 import com.azamat_komaev.crudapp.model.Status;
-import com.azamat_komaev.crudapp.service.SpecialtyService;
+import com.azamat_komaev.crudapp.repository.jdbc.JdbcSpecialtyRepositoryImpl;
+import com.azamat_komaev.crudapp.service.RepositoryService;
 
 import java.util.List;
 
 public class SpecialtyController {
-    private final SpecialtyService specialtyService;
+    private final RepositoryService<Specialty, Integer> specialtyService;
 
     public SpecialtyController() {
-        this.specialtyService = new SpecialtyService();
+        this.specialtyService = new RepositoryService<>(new JdbcSpecialtyRepositoryImpl());
     }
 
     public List<Specialty> getAll() {
@@ -29,10 +30,6 @@ public class SpecialtyController {
     public Specialty update(Integer id, String name, Status status) {
         Specialty specialtyToUpdate = this.specialtyService.getById(id);
 
-        if (specialtyToUpdate == null) {
-            throw new IllegalArgumentException("There is not any specialty with id=" + id);
-        }
-
         specialtyToUpdate.setName(name);
         specialtyToUpdate.setStatus(status);
 
@@ -43,4 +40,3 @@ public class SpecialtyController {
         specialtyService.delete(id);
     }
 }
-
