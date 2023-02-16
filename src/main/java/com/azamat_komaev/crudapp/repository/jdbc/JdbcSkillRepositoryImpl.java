@@ -16,7 +16,7 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
     @Override
     public Skill getById(Integer id) {
         String sqlQuery = "select * from skills where id = ?";
-        Skill skill = null;
+        Skill skill;
 
         try (
             Connection conn = Database.getInstance().getConnection();
@@ -26,15 +26,15 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
             ResultSet rs = statement.executeQuery();
 
             if (!rs.next()) {
-                return null;
+                throw new RuntimeException("Cannot find skill entry with id=" + id);
             }
 
             skill = new Skill(rs.getInt("id"), rs.getString("name"),
-                rs.getBoolean("active") ? Status.ACTIVE : Status.DELETED);
-
+                              rs.getBoolean("active") ? Status.ACTIVE : Status.DELETED);
             rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
 
         return skill;
@@ -55,11 +55,12 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
                                         rs.getBoolean("active") ? Status.ACTIVE : Status.DELETED);
                 skillList.add(skill);
             }
+
+            return skillList;
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
-
-        return skillList;
     }
 
     @Override
@@ -74,7 +75,7 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException(e.getMessage());
         }
 
         return skillToSave;
@@ -93,7 +94,7 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException(e.getMessage());
         }
 
         return skill;
@@ -111,6 +112,7 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

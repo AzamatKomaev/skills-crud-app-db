@@ -1,7 +1,6 @@
 package com.azamat_komaev.crudapp.service;
 
 import com.azamat_komaev.crudapp.model.Specialty;
-import com.azamat_komaev.crudapp.model.Status;
 import com.azamat_komaev.crudapp.repository.SpecialtyRepository;
 import com.azamat_komaev.crudapp.repository.jdbc.JdbcSpecialtyRepositoryImpl;
 
@@ -14,14 +13,6 @@ public class SpecialtyService {
         this.specialtyRepository = new JdbcSpecialtyRepositoryImpl();
     }
 
-    public static boolean validateSpecialty(Specialty specialty) {
-        if (specialty == null) {
-            return true;
-        }
-
-        return false;
-    }
-
     public List<Specialty> getAll() {
         return specialtyRepository.getAll();
     }
@@ -30,15 +21,12 @@ public class SpecialtyService {
         return specialtyRepository.getById(id);
     }
 
-    public Specialty save(String name, Status status) {
-        Specialty specialtyToSave = new Specialty(null, name, status);
-        return specialtyRepository.save(specialtyToSave);
+    public Specialty save(Specialty specialty) {
+        return specialtyRepository.save(specialty);
     }
 
-    public Specialty update(Specialty specialtyToUpdate, String name, Status status) {
-        specialtyToUpdate.setName(name);
-        specialtyToUpdate.setStatus(status);
-        return specialtyToUpdate;
+    public Specialty update(Specialty specialtyToUpdate) {
+        return specialtyRepository.update(specialtyToUpdate);
     }
 
     public void delete(Integer id) {

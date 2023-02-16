@@ -22,17 +22,21 @@ public class SpecialtyController {
     }
 
     public Specialty save(String name, Status status) {
-        return specialtyService.save(name, status);
+        Specialty specialtyToSave = new Specialty(null, name, status);
+        return specialtyService.save(specialtyToSave);
     }
 
     public Specialty update(Integer id, String name, Status status) {
         Specialty specialtyToUpdate = this.specialtyService.getById(id);
 
-        if (SpecialtyService.validateSpecialty(specialtyToUpdate)) {
-            throw new IllegalArgumentException("Specialty object is not valid. Maybe there is not any skill with such id: " + id);
+        if (specialtyToUpdate == null) {
+            throw new IllegalArgumentException("There is not any specialty with id=" + id);
         }
 
-        return specialtyService.update(specialtyToUpdate, name, status);
+        specialtyToUpdate.setName(name);
+        specialtyToUpdate.setStatus(status);
+
+        return specialtyService.update(specialtyToUpdate);
     }
 
     public void destroy(Integer id) {

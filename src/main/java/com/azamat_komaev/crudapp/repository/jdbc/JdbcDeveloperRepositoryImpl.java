@@ -26,8 +26,8 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
                           "left join skills sk on ds.skill_id = sk.id " +
                           "left join specialties sp on d.specialty_id = sp.id " +
                           "where d.id = ? group by d.id";
-        Developer developer = null;
         SkillRepository skillRepository = new JdbcSkillRepositoryImpl();
+        Developer developer;
 
         try (
             Connection conn = Database.getInstance().getConnection();
@@ -37,12 +37,14 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
             ResultSet rs = statement.executeQuery();
 
             if (!rs.next()) {
-                return null;
+                throw new RuntimeException("Cannot find developer entry with id=" + id);
             }
 
-            developer = DeveloperRepositoryUtil.getDeveloperResultSet(rs, skillRepository);
+            developer = DeveloperRepositoryUtil.getDeveloperFromResultSet(rs, skillRepository);
+            rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
 
         return developer;
@@ -63,22 +65,22 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
             ResultSet rs = statement.executeQuery(sqlQuery)
         ) {
             while (rs.next()) {
-                Developer developer = DeveloperRepositoryUtil.getDeveloperResultSet(rs, skillRepository);
+                Developer developer = DeveloperRepositoryUtil.getDeveloperFromResultSet(rs, skillRepository);
                 developerList.add(developer);
             }
 
             return developerList;
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
-
-        return developerList;
     }
 
     @Override
     public Developer save(Developer developerToSave) {
         String insertDeveloperSqlQuery = "insert into developers (first_name, last_name, specialty_id) " +
                                          "values (?, ?, ?)";
+
         try (
             Connection conn = Database.getInstance().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(insertDeveloperSqlQuery,
@@ -94,19 +96,18 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
             ResultSet rs = preparedStatement.getGeneratedKeys();
 
             if (!rs.next()) {
-                return null;
+                throw new RuntimeException("Cannot get generated keys from result set!");
             }
 
             int developerId = rs.getInt(1);
             DeveloperRepositoryUtil.insertSkillsIdsIntoDevelopersSkillsTable(conn, developerToSave, developerId);
 
             rs.close();
-
             conn.commit();
             conn.setAutoCommit(true);
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException(e.getMessage());
         }
 
         return developerToSave;
@@ -141,7 +142,7 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
             conn.setAutoCommit(true);
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException(e.getMessage());
         }
 
         return developerToUpdate;
@@ -168,6 +169,7 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
             conn.setAutoCommit(true);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

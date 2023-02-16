@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DeveloperRepositoryUtil {
-    public static Developer getDeveloperResultSet(ResultSet rs, SkillRepository skillRepository) throws SQLException {
+    public static Developer getDeveloperFromResultSet(ResultSet rs, SkillRepository skillRepository) throws SQLException {
         int developerId = rs.getInt("d.id");
         String firstName = rs.getString("first_name");
         String lastName = rs.getString("last_name");

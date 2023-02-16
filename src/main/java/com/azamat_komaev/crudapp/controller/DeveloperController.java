@@ -26,24 +26,29 @@ public class DeveloperController {
 
     public Developer save(String firstName, String lastName, Status status,
                           List<Skill> skillList, Specialty specialty) {
-        if (SpecialtyService.validateSpecialty(specialty)) {
-            throw new IllegalArgumentException("Specialty object is not valid!");
+        if (specialty == null) {
+            throw new IllegalArgumentException("Specialty is null!");
         }
 
-        return developerService.save(firstName, lastName, status, skillList, specialty);
+        Developer developerToSave = new Developer(null, firstName, lastName, status,
+                                                  skillList, specialty);
+        return developerService.save(developerToSave);
     }
 
     public Developer update(Integer id, String firstName, String lastName, Status status,
                             List<Skill> skillList, Specialty specialty) {
         Developer developerToUpdate = developerService.getById(id);
 
-        if (!DeveloperService.validateDeveloper(developerToUpdate)) {
-            throw new IllegalArgumentException(
-                "Developer object is not valid. Maybe there is not any developer with such id: " + id
-            );
+        if (developerToUpdate == null) {
+            throw new IllegalArgumentException("There is not any developer with id=" + id);
         }
 
-        return developerService.update(developerToUpdate, firstName, lastName, status, skillList, specialty);
+        developerToUpdate.setFirstName(firstName);
+        developerToUpdate.setLastName(lastName);
+        developerToUpdate.setStatus(status);
+        developerToUpdate.setSkills(skillList);
+        developerToUpdate.setSpecialty(specialty);
+        return developerService.update(developerToUpdate);
     }
 
     public void destroy(Integer id) {

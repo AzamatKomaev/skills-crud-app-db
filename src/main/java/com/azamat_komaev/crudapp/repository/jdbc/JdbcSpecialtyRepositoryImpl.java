@@ -15,7 +15,7 @@ public class JdbcSpecialtyRepositoryImpl implements SpecialtyRepository {
     @Override
     public Specialty getById(Integer id) {
         String sqlQuery = "select * from specialties where id = ?";
-        Specialty specialty = null;
+        Specialty specialty;
 
         try (
             Connection conn = Database.getInstance().getConnection();
@@ -25,16 +25,15 @@ public class JdbcSpecialtyRepositoryImpl implements SpecialtyRepository {
             ResultSet rs = statement.executeQuery();
 
             if (!rs.next()) {
-                return null;
+                throw new RuntimeException("Cannot find skill entry with id=" + id);
             }
 
             specialty = new Specialty(rs.getInt("id"), rs.getString("name"),
                                       rs.getBoolean("active") ? Status.ACTIVE : Status.DELETED);
-
             rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
-
+            throw new RuntimeException(e.getMessage());
         }
 
         return specialty;
@@ -55,11 +54,12 @@ public class JdbcSpecialtyRepositoryImpl implements SpecialtyRepository {
                                                     rs.getBoolean("active") ? Status.ACTIVE : Status.DELETED);
                 specialtyList.add(specialty);
             }
+
+            return specialtyList;
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
-
-        return specialtyList;
     }
 
     @Override
@@ -74,7 +74,7 @@ public class JdbcSpecialtyRepositoryImpl implements SpecialtyRepository {
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException(e.getMessage());
         }
 
         return specialtyToSave;
@@ -93,7 +93,7 @@ public class JdbcSpecialtyRepositoryImpl implements SpecialtyRepository {
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException(e.getMessage());
         }
 
         return specialty;
@@ -110,6 +110,7 @@ public class JdbcSpecialtyRepositoryImpl implements SpecialtyRepository {
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

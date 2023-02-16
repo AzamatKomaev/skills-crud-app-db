@@ -16,14 +16,6 @@ public class DeveloperService {
         this.developerRepository = new JdbcDeveloperRepositoryImpl();
     }
 
-    public static boolean validateDeveloper(Developer developer) {
-        if (developer == null) {
-            return false;
-        }
-
-        return true;
-    }
-
     public List<Developer> getAll() {
         return developerRepository.getAll();
     }
@@ -32,21 +24,12 @@ public class DeveloperService {
         return developerRepository.getById(id);
     }
 
-    public Developer save(String firstName, String lastName, Status status,
-                          List<Skill> skillList, Specialty specialty) {
-        Developer developerToSave = new Developer(null, firstName, lastName, status, skillList, specialty);
-        return this.developerRepository.save(developerToSave);
+    public Developer save(Developer developer) {
+        return this.developerRepository.save(developer);
     }
 
-    public Developer update(Developer developerToUpdate, String firstName, String lastName,
-                            Status status, List<Skill> skillList, Specialty specialty) {
-        developerToUpdate.setFirstName(firstName);
-        developerToUpdate.setLastName(lastName);
-        developerToUpdate.setStatus(status);
-        developerToUpdate.setSkills(skillList);
-        developerToUpdate.setSpecialty(specialty);
-
-        return developerRepository.update(developerToUpdate);
+    public Developer update(Developer developer) {
+        return developerRepository.update(developer);
     }
 
     public void delete(Integer id) {

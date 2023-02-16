@@ -1,6 +1,6 @@
 .idea
 src/main/resources/liquibase.dev.properties
-src/main/resources/liquebase.test.properties
+src/main/resources/liquibase.test.properties
 
 ##############################
 ## Java

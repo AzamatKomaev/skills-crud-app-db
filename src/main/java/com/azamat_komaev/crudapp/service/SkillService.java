@@ -14,14 +14,6 @@ public class SkillService {
         this.skillRepository = new JdbcSkillRepositoryImpl();
     }
 
-    public static boolean validateSkill(Skill skill) {
-        if (skill == null) {
-            return false;
-        }
-
-        return true;
-    }
-
     public List<Skill> getAll() {
         return skillRepository.getAll();
     }
@@ -30,15 +22,12 @@ public class SkillService {
         return skillRepository.getById(id);
     }
 
-    public Skill save(String name, Status status) {
-        Skill skillToSave = new Skill(null, name, status);
-        return skillRepository.save(skillToSave);
+    public Skill save(Skill skill) {
+        return skillRepository.save(skill);
     }
 
-    public Skill update(Skill skillToUpdate, String name, Status status) {
-        skillToUpdate.setName(name);
-        skillToUpdate.setStatus(status);
-        return skillRepository.save(skillToUpdate);
+    public Skill update(Skill skill) {
+        return skillRepository.save(skill);
     }
 
     public void delete(Integer id) {

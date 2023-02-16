@@ -12,13 +12,14 @@ public class Database {
     private String username;
     private String password;
 
-    private Database() {
+    public Database() {
         setUpProperties();
     }
 
     private void setUpProperties() {
         Properties properties = new Properties();
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        System.out.println(classloader);
 
         try (
             InputStream in = classloader.getResourceAsStream(System.getenv("PROPERTIES_FILE"));

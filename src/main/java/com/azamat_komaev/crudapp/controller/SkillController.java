@@ -22,17 +22,20 @@ public class SkillController {
     }
 
     public Skill save(String name, Status status) {
-        return skillService.save(name, status);
+        Skill skill = new Skill(null, name, status);
+        return skillService.save(skill);
     }
 
     public Skill update(Integer id, String name, Status status) {
         Skill skillToUpdate = this.skillService.getById(id);
 
-        if (!SkillService.validateSkill(skillToUpdate)) {
-            throw new IllegalArgumentException("Skill object is not valid. Maybe there is not any skill with such id: " + id);
+        if (skillToUpdate == null) {
+            throw new IllegalArgumentException("There is no any skill id= " + id);
         }
 
-        return this.skillService.update(skillToUpdate, name, status);
+        skillToUpdate.setName(name);
+        skillToUpdate.setStatus(status);
+        return this.skillService.update(skillToUpdate);
     }
 
     public void destroy(Integer id) {
