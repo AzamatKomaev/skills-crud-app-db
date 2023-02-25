@@ -14,12 +14,12 @@ public class JdbcSpecialtyRepositoryImpl implements SpecialtyRepository {
 
     @Override
     public Specialty getById(Integer id) {
+        Connection conn = Database.getInstance().getConnection();
         String sqlQuery = "select * from specialties where id = ?";
         Specialty specialty;
 
         try (
-            Connection conn = Database.getInstance().getConnection();
-            PreparedStatement statement = conn.prepareStatement(sqlQuery);
+            PreparedStatement statement = conn.prepareStatement(sqlQuery)
         ) {
             statement.setInt(1, id);
             ResultSet rs = statement.executeQuery();
@@ -41,11 +41,11 @@ public class JdbcSpecialtyRepositoryImpl implements SpecialtyRepository {
 
     @Override
     public List<Specialty> getAll() {
+        Connection conn = Database.getInstance().getConnection();
         String sqlQuery = "select * from specialties";
         List<Specialty> specialtyList = new ArrayList<>();
 
         try (
-            Connection conn = Database.getInstance().getConnection();
             Statement statement = conn.createStatement();
             ResultSet rs = statement.executeQuery(sqlQuery)
         ) {
@@ -64,11 +64,11 @@ public class JdbcSpecialtyRepositoryImpl implements SpecialtyRepository {
 
     @Override
     public Specialty save(Specialty specialtyToSave) {
+        Connection conn = Database.getInstance().getConnection();
         String sqlQuery = "insert into specialties (name) values (?)";
 
         try (
-            Connection conn = Database.getInstance().getConnection();
-            PreparedStatement statement = conn.prepareStatement(sqlQuery);
+            PreparedStatement statement = conn.prepareStatement(sqlQuery)
         ) {
             statement.setString(1, specialtyToSave.getName());
             statement.executeUpdate();
@@ -82,10 +82,10 @@ public class JdbcSpecialtyRepositoryImpl implements SpecialtyRepository {
 
     @Override
     public Specialty update(Specialty specialty) {
+        Connection conn = Database.getInstance().getConnection();
         String sqlQuery = "update specialties set name = ? where id = ?";
 
         try (
-            Connection conn = Database.getInstance().getConnection();
             PreparedStatement statement = conn.prepareStatement(sqlQuery)
         ) {
             statement.setString(1, specialty.getName());
@@ -101,9 +101,10 @@ public class JdbcSpecialtyRepositoryImpl implements SpecialtyRepository {
 
     @Override
     public void deleteById(Integer id) {
+        Connection conn = Database.getInstance().getConnection();
         String sqlQuery = "update specialties set active = false where id = ?";
+
         try (
-            Connection conn = Database.getInstance().getConnection();
             PreparedStatement statement = conn.prepareStatement(sqlQuery)
         ) {
             statement.setInt(1, id);

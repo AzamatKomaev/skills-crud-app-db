@@ -15,12 +15,12 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
 
     @Override
     public Skill getById(Integer id) {
+        Connection conn = Database.getInstance().getConnection();
         String sqlQuery = "select * from skills where id = ?";
         Skill skill;
 
         try (
-            Connection conn = Database.getInstance().getConnection();
-            PreparedStatement statement = conn.prepareStatement(sqlQuery);
+            PreparedStatement statement = conn.prepareStatement(sqlQuery)
         ) {
             statement.setInt(1, id);
             ResultSet rs = statement.executeQuery();
@@ -42,11 +42,11 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
 
     @Override
     public List<Skill> getAll() {
+        Connection conn = Database.getInstance().getConnection();
         String sqlQuery = "select * from skills";
         List<Skill> skillList = new ArrayList<>();
 
         try (
-            Connection conn = Database.getInstance().getConnection();
             Statement statement = conn.createStatement();
             ResultSet rs = statement.executeQuery(sqlQuery)
         ) {
@@ -65,10 +65,10 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
 
     @Override
     public Skill save(Skill skillToSave) {
+        Connection conn = Database.getInstance().getConnection();
         String sqlQuery = "insert into skills (name) values (?)";
 
         try (
-            Connection conn = Database.getInstance().getConnection();
             PreparedStatement statement = conn.prepareStatement(sqlQuery);
         ) {
             statement.setString(1, skillToSave.getName());
@@ -83,10 +83,10 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
 
     @Override
     public Skill update(Skill skill) {
+        Connection conn = Database.getInstance().getConnection();
         String sqlQuery = "update skills set name = ? where id = ?";
 
         try (
-            Connection conn = Database.getInstance().getConnection();
             PreparedStatement statement = conn.prepareStatement(sqlQuery)
         ) {
             statement.setString(1, skill.getName());
@@ -102,10 +102,10 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
 
     @Override
     public void deleteById(Integer id) {
+        Connection conn = Database.getInstance().getConnection();
         String sqlQuery = "update skills set active = true where id = ?";
 
         try (
-            Connection conn = Database.getInstance().getConnection();
             PreparedStatement statement = conn.prepareStatement(sqlQuery)
         ) {
             statement.setInt(1, id);

@@ -8,6 +8,7 @@ import java.util.Properties;
 
 public class Database {
     private static Database instance;
+    private Connection connection;
     private String url;
     private String username;
     private String password;
@@ -28,21 +29,12 @@ public class Database {
             this.url = properties.getProperty("url");
             this.username = properties.getProperty("username");
             this.password = properties.getProperty("password");
-        } catch (IOException e) {
+
+            this.connection = DriverManager.getConnection(url + "?user=" + username + "&password=" + password);
+        }
+        catch (IOException | SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    public Connection getConnection() {
-        Connection connection = null;
-
-        try {
-            connection = DriverManager.getConnection(url + "?user=" + username + "&password=" + password);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return connection;
     }
 
     public static Database getInstance() {
@@ -51,6 +43,10 @@ public class Database {
         }
 
         return instance;
+    }
+
+    public Connection getConnection() {
+        return connection;
     }
 
     public String getUrl() {
@@ -64,4 +60,5 @@ public class Database {
     public String getPassword() {
         return password;
     }
+
 }

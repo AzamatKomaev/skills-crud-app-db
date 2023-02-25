@@ -21,6 +21,7 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
 
     @Override
     public Developer getById(Integer id) {
+        Connection conn = Database.getInstance().getConnection();
         String sqlQuery = "select d.*, sp.*, group_concat(sk.id separator ' ') as skills_id " +
                           "from developers d left join developers_skills ds on d.id = ds.developer_id " +
                           "left join skills sk on ds.skill_id = sk.id " +
@@ -30,7 +31,6 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
         Developer developer;
 
         try (
-            Connection conn = Database.getInstance().getConnection();
             PreparedStatement statement = conn.prepareStatement(sqlQuery);
         ) {
             statement.setInt(1, id);
@@ -52,6 +52,7 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
 
     @Override
     public List<Developer> getAll() {
+        Connection conn = Database.getInstance().getConnection();
         String sqlQuery = "select d.*, sp.*, group_concat(sk.id separator ' ') as skills_id " +
                           "from developers d left join developers_skills ds on d.id = ds.developer_id " +
                           "left join skills sk on ds.skill_id = sk.id " +
@@ -60,7 +61,6 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
         SkillRepository skillRepository = new JdbcSkillRepositoryImpl();
 
         try (
-            Connection conn = Database.getInstance().getConnection();
             Statement statement = conn.createStatement();
             ResultSet rs = statement.executeQuery(sqlQuery)
         ) {
@@ -78,11 +78,11 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
 
     @Override
     public Developer save(Developer developerToSave) {
+        Connection conn = Database.getInstance().getConnection();
         String insertDeveloperSqlQuery = "insert into developers (first_name, last_name, specialty_id) " +
                                          "values (?, ?, ?)";
 
         try (
-            Connection conn = Database.getInstance().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(insertDeveloperSqlQuery,
                                                                         Statement.RETURN_GENERATED_KEYS);
         ) {
@@ -115,12 +115,12 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
 
     @Override
     public Developer update(Developer developerToUpdate) {
+        Connection conn = Database.getInstance().getConnection();
         String updateDeveloperSqlQuery = "update developers set first_name = ?, last_name = ?, specialty_id = ? " +
                                          "where id = ?";
         String deleteOldDeveloperSkillsSqlQuery = "delete from developers_skills where developer_id = ?";
 
         try (
-            Connection conn = Database.getInstance().getConnection();
             PreparedStatement preparedUpdateStatement = conn.prepareStatement(updateDeveloperSqlQuery);
             PreparedStatement preparedDeleteStatement = conn.prepareStatement(deleteOldDeveloperSkillsSqlQuery)
         ) {
@@ -150,13 +150,13 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
 
     @Override
     public void deleteById(Integer id) {
+        Connection conn = Database.getInstance().getConnection();
         String deleteDeveloperSqlQuery = "delete from developers where id = ?";
         String deleteDevelopersSkillsRelationsSqlQuery = "delete from developers_skills where developer_id = ?";
 
         try (
-            Connection conn = Database.getInstance().getConnection();
-            PreparedStatement preparedDeleteDeveloperStatement = conn.prepareStatement(deleteDeveloperSqlQuery);
             PreparedStatement preparedDeleteRelationsStatement = conn.prepareStatement(deleteDevelopersSkillsRelationsSqlQuery);
+            PreparedStatement preparedDeleteDeveloperStatement = conn.prepareStatement(deleteDeveloperSqlQuery);
         ) {
             conn.setAutoCommit(false);
 
